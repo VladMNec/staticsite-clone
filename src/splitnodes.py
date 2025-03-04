@@ -18,3 +18,16 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                     split_node.append(TextNode(current[i], text_type))
             new_nodes.extend(split_node)
     return new_nodes
+
+
+def extract_markdown_images(text):
+    alt_matches = re.findall(r"\!\[(.*?)\]", text)
+    src_matches = re.findall(r"\((.*?)\)", text)
+    return list(zip(alt_matches, src_matches))
+
+def extract_markdown_links(text):
+    anchor_matches = re.findall(r"\[(.*?)\]", text)
+    link_matches = re.findall(r"\((.*?)\)", text)
+    return list(zip(anchor_matches, link_matches))
+
+
