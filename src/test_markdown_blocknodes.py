@@ -36,6 +36,8 @@ This is the same paragraph on a new line
         self.assertEqual(block_to_blocktype(block), BlockType.UNORDERED_LIST)
         block = "1. list\n2. list2"
         self.assertEqual(block_to_blocktype(block), BlockType.ORDERED_LIST)
+        block = "1. list\n2. list2\n3. a\n4. b\n5. c\n6. d\n7. e\n8. e\n9. f\n10. g"
+        self.assertEqual(block_to_blocktype(block), BlockType.ORDERED_LIST)
         block = "paragraph"
         self.assertEqual(block_to_blocktype(block), BlockType.PARAGRAPH)
 

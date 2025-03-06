@@ -30,14 +30,13 @@ def block_to_blocktype(block):
             return BlockType.PARAGRAPH
         return BlockType.QUOTE
     # Check if it's a complete code block
-    if lines[0] == lines[-1] == "```" and len(lines) > 2:
-        if lines[0] == lines[-1]:
+    if lines[0].startswith("```") and lines[-1] == "```" and len(lines) > 1:
             return BlockType.CODE
     # Check if ordered list in incremental order
     if lines[0].startswith(f"{ordered_start}. "):
         for line in lines[1:]:
             ordered_start += 1
-            if line[0:3] == f"{ordered_start}. ":
+            if line.startswith(f"{ordered_start}. "):
                 continue
             return BlockType.PARAGRAPH
         return BlockType.ORDERED_LIST
