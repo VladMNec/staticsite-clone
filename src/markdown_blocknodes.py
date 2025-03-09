@@ -1,4 +1,5 @@
 from enum import Enum
+from htmlnode import LeafNode
 
 
 class BlockType(Enum):
@@ -9,11 +10,12 @@ class BlockType(Enum):
     UNORDERED_LIST = "unordered_list"
     ORDERED_LIST = "ordered_list"
 
+
 def block_to_blocktype(block):
     ordered_start = 1
     lines = block.split("\n")
     gen_par = tuple(["#" * i + " " for i in range(1, 7)])
-    if block.startswith(gen_par):
+    if block.startswith(("# ", "## ", "### ", "#### ", "##### ", "###### ")):
         return BlockType.HEADING
     # Check ul block
     if lines[0].startswith("- "):
