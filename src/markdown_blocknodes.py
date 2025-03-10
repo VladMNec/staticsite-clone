@@ -15,7 +15,7 @@ def block_to_blocktype(block):
     ordered_start = 1
     lines = block.split("\n")
     gen_par = tuple(["#" * i + " " for i in range(1, 7)])
-    if block.startswith(("# ", "## ", "### ", "#### ", "##### ", "###### ")):
+    if block.startswith(gen_par):
         return BlockType.HEADING
     # Check ul block
     if lines[0].startswith("- "):
@@ -25,9 +25,9 @@ def block_to_blocktype(block):
             return BlockType.PARAGRAPH
         return BlockType.UNORDERED_LIST
     # Check quote block
-    if lines[0].startswith("> "):
+    if lines[0].startswith(">"):
         for line in lines[1:]:
-            if line.startswith("> "):
+            if line.startswith(">"):
                 continue
             return BlockType.PARAGRAPH
         return BlockType.QUOTE

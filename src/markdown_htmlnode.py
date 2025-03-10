@@ -2,13 +2,14 @@ from markdown_blocknodes import BlockType, markdown_to_blocks, block_to_blocktyp
 from htmlnode import ParentNode
 from splitnodes import text_to_textnodes
 from textnode import TextNode, TextType
+import re
 
 
 # 1. convert markdown to block
 def markdown_to_html_node(markdown):
     blocks = markdown_to_blocks(markdown)
     children = [block_to_html_node(block) for block in blocks]
-    return ParentNode("div", children).to_html()
+    return ParentNode("div", children)
     
 # 2. check type of block
 def block_to_html_node(block):
@@ -18,6 +19,13 @@ def block_to_html_node(block):
         return heading_to_html_node(block)
     if block_to_blocktype(block) == BlockType.UNORDERED_LIST:
         return ul_to_html_node(block)
+    if block_to_blocktype(block) == BlockType.ORDERED_LIST:
+        return olist_to_html_node(block)
+    if block_to_blocktype(block) == BlockType.CODE:
+        return code_to_html_node(block)
+    if block_to_blocktype(block) == BlockType.QUOTE:
+        return quote_to_html_node(block)
+    raise ValueError("invalid block")
     
 # 3. make text into html nodes    
 def text_to_children(text):
@@ -52,12 +60,32 @@ def ul_to_html_node(block):
     children = [ParentNode("li", text_to_children(line.strip("- "))) for line in lines]
     return ParentNode("ul", children)
 
-# 7. ordered list func
-# 8. quote func
+def quote_to_html_node(block):
+    lines = block.split("\n")
+    new_lines = []
+    for line in lines:
+        if not line.startswith(">"):
+            raise ValueError("invalid quote block")
+        new_lines.append(line.lstrip(">").strip())
+    content = " ".join(new_lines)
+    children = text_to_children(content)
+    return ParentNode("blockquote", children)
 
-# working test
-# md = """
-# - a
-# - b
-# """
-# print(markdown_to_html_node(md))
+def olist_to_html_node(block):
+    items = block.split("\n")
+    html_items = []
+    for item in items:
+        text = item[3:]
+        children = text_to_children(text)
+        html_items.append(ParentNode("li", children))
+    return ParentNode("ol", html_items)
+
+def code_to_html_node(block):
+    if not block.startswith("```") or not block.endswith("```"):
+        raise ValueError("invalid code block")
+    text = block[4:-3]
+    raw_text_node = TextNode(text, TextType.TEXT)
+    child = raw_text_node.text_node_to_html_node()
+    code = ParentNode("code", [child])
+    return ParentNode("pre", [code])
+

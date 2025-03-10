@@ -1,11 +1,23 @@
-from textnode import TextType, TextNode
-from htmlnode import HTMLNode
+import os
+import shutil
+from generate_page import generate_pages_recursively
+from copystatic import copy_files_recursive
+
+
+dir_path_static = "./static"
+dir_path_public = "./public"
+dir_path_content = "./content"
+
 
 def main():
-    text_node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-    print(text_node)
-    html_node = HTMLNode("Anchor here", "Paragraph text", [HTMLNode()], {"href": "https://www.google.com"})
-    print(html_node)
+    print("Deleting public directory...")
+    if os.path.exists(dir_path_public):
+        shutil.rmtree(dir_path_public)
 
-if __name__ == "__main__":
-    main()
+    print("Copying static files to public directory...")
+    copy_files_recursive(dir_path_static, dir_path_public)
+
+    generate_pages_recursively(dir_path_content, "template.html", dir_path_public)
+
+
+main()
