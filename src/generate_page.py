@@ -30,11 +30,18 @@ def generate_page(from_path, template_path, dest_path):
 def generate_pages_recursively(dir_path_content, template_path, dest_path):
     if not os.path.exists(dest_path):
         os.mkdir(dest_path)
-
+    initial_path = dest_path
     for filename in os.listdir(dir_path_content):
         from_path = os.path.join(dir_path_content, filename)
-        dest_path = os.path.join(dest_path)
-        generate_page(from_path, template_path, dest_path)
+        if os.path.isfile(from_path):
+            pre, ext = os.path.splitext(filename)
+            dest_path = os.path.join(dest_path, f"{pre}.html")
+            generate_page(from_path, template_path, dest_path)
+        else:
+            dest_path = os.path.join(dest_path, filename)
+            print(f"The filename: {filename}, from path: {from_path}, to path: {dest_path}")
+            generate_pages_recursively(from_path, template_path, dest_path)
+            dest_path = initial_path
 
 
 
