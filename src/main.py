@@ -8,7 +8,8 @@ import sys
 dir_path_static = "./static"
 dir_path_public = "./docs"
 dir_path_content = "./content"
-base_path = sys.argv[0]
+base_path = sys.argv[0].replace("main.py", "")
+print(base_path)
 
 
 def main():
